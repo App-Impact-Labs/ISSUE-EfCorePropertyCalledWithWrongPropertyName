@@ -11,6 +11,8 @@ namespace EfCoreWrongPropertyNameError
     {
         static void Main(string[] args)
         {
+            #region Migration & data seeding - not relevant to the issue
+
             int localeId = 1;
 
             using (AppDbContext dbContext = new AppDbContext())
@@ -49,7 +51,9 @@ namespace EfCoreWrongPropertyNameError
                 dbContext.SaveChanges();
             }
 
-            string col = "descriptionFormatted,nameFormatted";
+            #endregion
+
+            string col = "descriptionFormatted,nameFormatted"; // If one column name is omitted, query will begin to work.
             string ord = "ASC";
 
             using (AppDbContext dbContext = new AppDbContext())
