@@ -59,15 +59,17 @@ namespace EfCoreWrongPropertyNameError
             using (AppDbContext dbContext = new AppDbContext())
             {
                 List<EntityDto> entities = dbContext.Entities
+                    .Join(dbContext.Resources, e => e.NameId, r => r.Id, (e, r) => new { Entity = e, Name = r })
+                    .Join(dbContext.Resources, er => er.Entity.DescriptionId, r => r.Id, (er, r) => new { er.Entity, er.Name, Description = r })
                     .Select(e => new EntityDto
                     {
                         NameFormatted = e.Name.Translations
-                         .Where(x => x.LocaleId == localeId)
-                         .Select(x => x.Value)
+                         .Where(t => t.LocaleId == localeId)
+                         .Select(t => t.Value)
                          .FirstOrDefault(),
                         DescriptionFormatted = e.Description.Translations
-                         .Where(x => x.LocaleId == localeId)
-                         .Select(x => x.Value)
+                         .Where(t => t.LocaleId == localeId)
+                         .Select(t => t.Value)
                          .FirstOrDefault()
                     })
                     .OrderBy($"{col} {ord}")
